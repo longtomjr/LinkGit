@@ -40,7 +40,7 @@ namespace LinkGit
             };
 
             _client.ExecuteAndWait(async () => {
-                await _client.Connect("MjIwMjI0ODgyNDAxNzM4NzUz.Cqdd-g.vuFGt54A3nk3w_IZjx9QK0MTEtg");
+                await _client.Connect(System.IO.File.ReadAllText(@"./token"));
             });
         }
     }
