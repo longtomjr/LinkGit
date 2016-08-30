@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,6 @@ namespace LinkGit
         {
             _client = new DiscordClient();
 
-
-
             _client.MessageReceived += async (s, e) =>
             {
                 if (!e.Message.IsAuthor)
@@ -26,7 +25,16 @@ namespace LinkGit
                     Match m = Regex.Match(e.Message.Text, "#(\\d+)");
                     if (m.Success)
                     {
-                        await e.Channel.SendMessage("https://github.com/TeamPorcupine/ProjectPorcupine/issues/" + m.ToString().Substring(1));
+                        string page = "https://github.com/TeamPorcupine/ProjectPorcupine/issues/" + m.ToString().Substring(1);
+                        using (HttpClient pageChecker = new HttpClient())
+                        {
+                            var response = await pageChecker.GetAsync(page);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                await e.Channel.SendMessage(page);
+                            }
+                        }
                     }
                 }
             };
