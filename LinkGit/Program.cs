@@ -22,8 +22,6 @@ namespace LinkGit
             _client = new DiscordClient();
             _client.Log.Message += (s, e) => Console.WriteLine($"[{e.Severity}] {e.Source}: {e.Message}");
 
-            Logger _logger = new Logger(_client);
-
             _client.MessageReceived += async (s, e) =>
             {
 
