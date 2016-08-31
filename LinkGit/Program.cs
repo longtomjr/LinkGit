@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Microsoft.AspNet.WebHooks;
 
 namespace LinkGit
 {
@@ -38,10 +39,19 @@ namespace LinkGit
                     }
                 }
             };
-
-            _client.ExecuteAndWait(async () => {
-                await _client.Connect(System.IO.File.ReadAllText(@"./token"));
-            });
+            string token = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
+            if (token != null)
+            {
+                _client.ExecuteAndWait(async () => {
+                    await _client.Connect(token);
+                });
+            }
+            else
+            {
+                _client.ExecuteAndWait(async () => {
+                    await _client.Connect(System.IO.File.ReadAllText(@"./token"));
+                });
+            }
         }
     }
 }
