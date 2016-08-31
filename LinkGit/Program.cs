@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Microsoft.AspNet.WebHooks;
+using Discord.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace LinkGit
 {
@@ -18,9 +20,15 @@ namespace LinkGit
         public void Start()
         {
             _client = new DiscordClient();
+            _client.Log.Message += (s, e) => Console.WriteLine($"[{e.Severity}] {e.Source}: {e.Message}");
+
+            Logger _logger = new Logger(_client);
 
             _client.MessageReceived += async (s, e) =>
             {
+
+                _logger.Log(e.User.ToString(), e.Message.Id, e.Message.Timestamp.ToString(), e.Message.Text);
+
                 if (!e.Message.IsAuthor)
                 {
                     Match m = Regex.Match(e.Message.Text, "#(\\d+)");
