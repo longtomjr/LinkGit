@@ -26,12 +26,16 @@ namespace LinkGit
     using SQLite;
 
     /// <summary>
-    /// Controler for SQLite database
+    /// Controller for SQLite database
     /// </summary>
     public class SQLiteController
     {
         private SQLiteConnection _db;
         
+        /// <summary>
+        /// Opens or creates a database
+        /// </summary>
+        /// <param name="path">The location of the database</param>
         public void OpenDB(string path)
         {
             this._db = new SQLiteConnection(path);
@@ -39,6 +43,15 @@ namespace LinkGit
             this._db.CreateTable<Channel>();
         }
 
+        /// <summary>
+        /// Adds a message to the database
+        /// </summary>
+        /// <param name="id">The Id of the message</param>
+        /// <param name="user">The name of the user that sent the message</param>
+        /// <param name="text">The message</param>
+        /// <param name="timestamp">The time and date the message was sent</param>
+        /// <param name="channelID">The Id of the channel the message was sent from</param>
+        /// <param name="channelName">The name of the channel the message was sent from</param>
         public void AddMessage(ulong id, string user, string text, DateTime timestamp, ulong channelID, string channelName)
         {
             var newMessage = new Message();
@@ -64,8 +77,5 @@ namespace LinkGit
                 this._db.Insert(newChannel);
             }
         }
-
-
-
     }
 }

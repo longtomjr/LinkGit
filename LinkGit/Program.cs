@@ -75,8 +75,8 @@ namespace LinkGit
                         }
                     }
                 }
-                dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
 
+                dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
             };
             string token = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
             if (token != null)
