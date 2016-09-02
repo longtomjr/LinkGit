@@ -92,5 +92,22 @@ namespace LinkGit
             this._db.Update(editedMessage);
             Console.WriteLine("Message: " + id.ToString() + " Updated to: " + text);
         }
+
+        public string GetMessage(long id)
+        {
+            string returnString;
+            Message retrievedMessage = this._db.Get<Message>((long)id);
+            returnString = retrievedMessage.Timestamp.ToString() + " | " + retrievedMessage.User + ": " + retrievedMessage.Text;
+            return returnString;
+        }
+
+        public void PrintMessages(ulong startID, ulong endID)
+        {
+            var messageList = this._db.Query<Message>("SELECT * FROM Messages WHERE Timestamp >= ? AND Timestamp <= ?", (long)startID, (long)endID);
+            foreach (Message certianmessage in messageList)
+            {
+                Console.WriteLine(this.GetMessage(certianmessage.ID));
+            }
+        }
     }
 }

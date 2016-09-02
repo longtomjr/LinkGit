@@ -79,6 +79,13 @@ namespace LinkGit
                 dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
             };
 
+            dbcontroler.PrintMessages(221343758124449802, 221344145011113984);
+
+            this._client.MessageDeleted += (s, e) =>
+            {
+                dbcontroler.RemoveMessage(e.Message.Id);
+            };
+
             this._client.MessageUpdated += (s, e) =>
             {
                 dbcontroler.EditMessage(e.Before.Id, e.After.Text);
