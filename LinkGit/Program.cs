@@ -1,38 +1,66 @@
-﻿using System;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
-using Microsoft.AspNet.WebHooks;
-using Discord.Logging;
-using Microsoft.Extensions.Logging;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="Program.cs">
+//    This file is part of LinkGit.
+//
+//    LinkGit is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    LinkGit is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with LinkGit.  If not, see http://www.gnu.org/licenses/.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace LinkGit
 {
-    class Program
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using Discord;
+
+    /// <summary>
+    /// The program
+    /// </summary>
+    public class Program
     {
-        static void Main(string[] args) => new Program().Start();
         private DiscordClient _client;
 
+        /// <summary>
+        /// Calls the Start function when running the program
+        /// </summary>
+        /// <param name="args">The args given at startup</param>
+        public static void Main(string[] args) => new Program().Start();
+
+        /// <summary>
+        /// The function that is run at the start of the program
+        /// </summary>
         public void Start()
         {
-            _client = new DiscordClient();
-            _client.Log.Message += (s, e) => Console.WriteLine($"[{e.Severity}] {e.Source}: {e.Message}");
+            this._client = new DiscordClient();
 
-            _client.MessageReceived += async (s, e) =>
+            // Checks for event MessageReceived
+            this._client.MessageReceived += async (s, e) =>
             {
-
-                _logger.Log(e.User.ToString(), e.Message.Id, e.Message.Timestamp.ToString(), e.Message.Text);
-
+                // Checks that the bot is not the author (prevents echo loop)
                 if (!e.Message.IsAuthor)
                 {
+                    // Checks the message to see if there is a #[number] in the message
                     Match m = Regex.Match(e.Message.Text, "#(\\d+)");
                     if (m.Success)
                     {
+                        // create a url for the issue page (removes the '#')
                         string page = "https://github.com/TeamPorcupine/ProjectPorcupine/issues/" + m.ToString().Substring(1);
+
+                        // Checks if the page exists
                         using (HttpClient pageChecker = new HttpClient())
                         {
                             var response = await pageChecker.GetAsync(page);
@@ -48,13 +76,15 @@ namespace LinkGit
             string token = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
             if (token != null)
             {
-                _client.ExecuteAndWait(async () => {
+                this._client.ExecuteAndWait(async () => 
+                {
                     await _client.Connect(token);
                 });
             }
             else
             {
-                _client.ExecuteAndWait(async () => {
+                this._client.ExecuteAndWait(async () => 
+                {
                     await _client.Connect(System.IO.File.ReadAllText(@"./token"));
                 });
             }
