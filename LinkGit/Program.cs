@@ -78,7 +78,12 @@ namespace LinkGit
 
                 dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
             };
-            string token = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
+
+            this._client.MessageUpdated += (s, e) =>
+            {
+                dbcontroler.EditMessage(e.Before.Id, e.After.Text);
+            };
+             string token = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
             if (token != null)
             {
                 this._client.ExecuteAndWait(async () => 

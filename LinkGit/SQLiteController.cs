@@ -77,5 +77,20 @@ namespace LinkGit
                 this._db.Insert(newChannel);
             }
         }
+
+        public void RemoveMessage(ulong id)
+        {
+            Console.WriteLine("Message Deleted: " + this._db.Get<Message>((long)id).Text);
+            Console.WriteLine(this._db.Delete<Message>((long)id) + "Rows Deleted");
+        }
+
+        public void EditMessage(ulong id, string text)
+        {
+            var editedMessage = new Message();
+            editedMessage.ID = (long)id;
+            editedMessage.Text = text;
+            this._db.Update(editedMessage);
+            Console.WriteLine("Message: " + id.ToString() + " Updated to: " + text);
+        }
     }
 }
