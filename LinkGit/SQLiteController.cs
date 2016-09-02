@@ -48,8 +48,7 @@ namespace LinkGit
             newMessage.Timestamp = timestamp;
             newMessage.ChannelID = (long)channelID;
 
-            Console.WriteLine(newMessage.ToString());
-
+            Console.WriteLine("newMessage Added: " + id.ToString() + ", " + user + ", " + text + ", " + timestamp.ToString() + ", " + channelID.ToString() + ", " + channelName);
 
             this._db.Insert(newMessage);
 
