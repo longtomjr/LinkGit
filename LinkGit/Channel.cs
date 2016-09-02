@@ -18,6 +18,7 @@
 //-----------------------------------------------------------------------
 namespace LinkGit
 {
+    using System;
     using SQLite;
 
     /// <summary>
@@ -30,7 +31,7 @@ namespace LinkGit
         /// Gets or sets the ID of the Discord channel
         /// </summary>
         [Unique, PrimaryKey]
-        public ulong ID { get; set; }
+        public long ID { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the Discord channel

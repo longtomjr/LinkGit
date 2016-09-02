@@ -31,7 +31,7 @@ namespace LinkGit
         /// Gets or sets the ID of the message
         /// </summary>
         [Unique, PrimaryKey]
-        public ulong ID { get; set; }
+        public long ID { get; set; }
 
         /// <summary>
         /// Gets or sets the user that sent the message
@@ -51,6 +51,6 @@ namespace LinkGit
         /// <summary>
         /// Gets or sets the ID of the channel the message was sent from
         /// </summary>
-        public ulong ChannelID { get; set; }
+        public long ChannelID { get; set; }
     }
 }

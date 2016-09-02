@@ -45,6 +45,9 @@ namespace LinkGit
         /// </summary>
         public void Start()
         {
+            var dbcontroler = new SQLiteController();
+            dbcontroler.OpenDB(@"./Chatlog");
+
             this._client = new DiscordClient();
 
             // Checks for event MessageReceived
@@ -72,6 +75,8 @@ namespace LinkGit
                         }
                     }
                 }
+                dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
+
             };
             string token = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
             if (token != null)
