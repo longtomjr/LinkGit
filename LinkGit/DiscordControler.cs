@@ -67,7 +67,12 @@ namespace LinkGit
 
         private void _client_MessageUpdated(object sender, MessageUpdatedEventArgs e)
         {
-            _dbcontroler.EditMessage(e.Before.Id, e.After.Text);
+            string atachments = "";
+            foreach (Discord.Message.Attachment a in e.After.Attachments)
+            {
+                atachments += " |attachment: " + a.Url;
+            }
+            _dbcontroler.EditMessage(e.Before.Id, e.After.Text + atachments);
         }
 
         private void _client_MessageDeleted(object sender, MessageEventArgs e)
