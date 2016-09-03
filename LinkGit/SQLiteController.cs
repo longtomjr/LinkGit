@@ -101,9 +101,9 @@ namespace LinkGit
             return returnString;
         }
 
-        public void PrintMessages(ulong startID, ulong endID)
+        public void PrintMessages(ulong startID, ulong endID, ulong channelID)
         {
-            var messageList = this._db.Query<Message>("SELECT * FROM Messages WHERE Timestamp >= ? AND Timestamp <= ?", (long)startID, (long)endID);
+            var messageList = this._db.Query<Message>("SELECT * FROM Messages WHERE ID >= ? AND ID <= ? AND ChannelID == ?", (long)startID, (long)endID, (long)channelID);
             foreach (Message certianmessage in messageList)
             {
                 Console.WriteLine(this.GetMessage(certianmessage.ID));
