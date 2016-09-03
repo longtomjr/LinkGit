@@ -26,6 +26,7 @@ namespace LinkGit
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Discord;
+    using Mono.Options;
 
     /// <summary>
     /// The program
@@ -33,19 +34,46 @@ namespace LinkGit
     public class Program
     {
         private DiscordController _discordControler;
+        private SQLiteController _sqliteControler;
 
         /// <summary>
         /// Calls the Start function when running the program
         /// </summary>
         /// <param name="args">The args given at startup</param>
-        public static void Main(string[] args) => new Program().Start();
+        public static void Main(string[] args) => new Program().Start(args);
 
         /// <summary>
-        /// The function that is run at the start of the program
+        /// The function that runs at the start of the program
         /// </summary>
-        public void Start()
+        /// <param name="args">arguments passed</param>
+        public void Start(string[] args)
         {
-            this._discordControler = new DiscordController();
+            ulong startID = 0;
+            ulong endID = 0;
+            ulong channelID = 0;
+
+            OptionSet options = new OptionSet
+            {
+                {"b|bot", "starts running the bot", b => {
+                    this._discordControler = new DiscordController();
+                } },
+
+                {"s|startid=", "sets the startID for getting a list of messages", s => startID = ulong.Parse(s) },
+                {"e|endid=", "sets the endID for getting a list of messages", s => endID = ulong.Parse(s) },
+                {"c|channelid=", "sets the channelID for getting a list of messages", s => channelID = ulong.Parse(s) },
+
+                {"m|messages", "gets the messages for the specified channel between two MessageIDs", m =>
+                {
+                    _sqliteControler = new SQLiteController();
+                    _sqliteControler.OpenDB(@"./Chatlog");
+                    _sqliteControler.PrintMessages(startID, endID, channelID);
+                } },
+
+            };
+            options.Parse(args);
+
+            Console.ReadLine();
+
         }
     }
 }
