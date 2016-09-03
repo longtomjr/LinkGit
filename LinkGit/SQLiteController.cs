@@ -78,12 +78,21 @@ namespace LinkGit
             }
         }
 
+        /// <summary>
+        /// Removes a message from the database
+        /// </summary>
+        /// <param name="id">The ID of the message to be removed</param>
         public void RemoveMessage(ulong id)
         {
             Console.WriteLine("Message Deleted: " + this._db.Get<Message>((long)id).Text);
             Console.WriteLine(this._db.Delete<Message>((long)id) + "Rows Deleted");
         }
 
+        /// <summary>
+        /// Edits a message in the database
+        /// </summary>
+        /// <param name="id">The Id of the message</param>
+        /// <param name="text">The text to change the message to</param>
         public void EditMessage(ulong id, string text)
         {
             var editedMessage = new Message();
@@ -93,20 +102,41 @@ namespace LinkGit
             Console.WriteLine("Message: " + id.ToString() + " Updated to: " + text);
         }
 
-        public string GetMessage(long id)
+        /// <summary>
+        /// Gets a single formatted message out of the database.
+        /// </summary>
+        /// <param name="id">The Id of the message</param>
+        /// <returns>String that is formatted for user readability</returns>
+        public string GetMessageString(long id)
         {
             string returnString;
-            Message retrievedMessage = this._db.Get<Message>((long)id);
+            Message retrievedMessage = this.GetMessage(id);
             returnString = retrievedMessage.Timestamp.ToString() + " | " + retrievedMessage.User + ": " + retrievedMessage.Text;
             return returnString;
         }
 
+        /// <summary>
+        /// Gets a message object out of the database
+        /// </summary>
+        /// <param name="id">The ID of the message</param>
+        /// <returns>Message object</returns>
+        public Message GetMessage(long id)
+        {
+           return this._db.Get<Message>((long)id);
+        }
+
+        /// <summary>
+        /// Prints all the messages between the startID and the endID that is in the channel specified by channelID
+        /// </summary>
+        /// <param name="startID">Message ID to start at</param>
+        /// <param name="endID">Message ID to end at</param>
+        /// <param name="channelID">The Id of the channel</param>
         public void PrintMessages(ulong startID, ulong endID, ulong channelID)
         {
             var messageList = this._db.Query<Message>("SELECT * FROM Messages WHERE ID >= ? AND ID <= ? AND ChannelID == ?", (long)startID, (long)endID, (long)channelID);
             foreach (Message certianmessage in messageList)
             {
-                Console.WriteLine(this.GetMessage(certianmessage.ID));
+                Console.WriteLine(this.GetMessageString(certianmessage.ID));
             }
         }
     }

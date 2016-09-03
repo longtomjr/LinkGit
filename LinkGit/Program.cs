@@ -32,7 +32,7 @@ namespace LinkGit
     /// </summary>
     public class Program
     {
-        private DiscordControler _dcControler;
+        private DiscordController _discordControler;
 
         /// <summary>
         /// Calls the Start function when running the program
@@ -45,8 +45,7 @@ namespace LinkGit
         /// </summary>
         public void Start()
         {
-            this._dcControler = new DiscordControler();
-
+            this._discordControler = new DiscordController();
         }
     }
 }

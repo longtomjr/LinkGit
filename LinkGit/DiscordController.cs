@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="DiscordControler.cs">
+// <copyright file="DiscordController.cs">
 //    This file is part of LinkGit.
 //
 //    LinkGit is free software: you can redistribute it and/or modify
@@ -23,18 +23,24 @@ namespace LinkGit
     using System.Linq;
     using System.Net.Http;
     using System.Text;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Discord;
-    using System.Text.RegularExpressions;
 
-    public class DiscordControler
+    /// <summary>
+    /// The controller to interact with the Discord-net API.
+    /// </summary>
+    public class DiscordController
     {
         private DiscordClient _client;
-        public bool Logging;
-        public bool Linking;
         private SQLiteController _dbcontroler;
 
-        public DiscordControler(bool logging = true, bool linking = true)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DiscordController" /> class.
+        /// </summary>
+        /// <param name="logging">Set to false to disable logging. True by default</param>
+        /// <param name="linking">Set to false to disable linking to Github. True by default</param>
+        public DiscordController(bool logging = true, bool linking = true)
         {
             this._dbcontroler = new SQLiteController();
             this._dbcontroler.OpenDB(@"./Chatlog");
@@ -65,22 +71,33 @@ namespace LinkGit
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the controller should log messages or not
+        /// </summary>
+        public bool Logging { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the controller should link to Github pages or not
+        /// </summary>
+        public bool Linking { get; set; }
+
         private void _client_MessageUpdated(object sender, MessageUpdatedEventArgs e)
         {
-            string atachments = "";
+            string atachments = string.Empty;
             foreach (Discord.Message.Attachment a in e.After.Attachments)
             {
                 atachments += " |attachment: " + a.Url;
             }
-            _dbcontroler.EditMessage(e.Before.Id, e.After.Text + atachments);
+
+            this._dbcontroler.EditMessage(e.Before.Id, e.After.Text + atachments);
         }
 
         private void _client_MessageDeleted(object sender, MessageEventArgs e)
         {
-            _dbcontroler.RemoveMessage(e.Message.Id);
+            this._dbcontroler.RemoveMessage(e.Message.Id);
         }
 
-        async private void _client_MessageReceived(object sender, MessageEventArgs e)
+        private async void _client_MessageReceived(object sender, MessageEventArgs e)
         {                
             // Checks the message to see if there is a #[number] in the message
             Match m = Regex.Match(e.Message.Text, "#(\\d+)");
@@ -100,11 +117,13 @@ namespace LinkGit
                     }
                 }
             }
-            string atachments = "";
+
+            string atachments = string.Empty;
             foreach (Discord.Message.Attachment a in e.Message.Attachments)
             {
                 atachments += " |attachment: " + a.Url;
             }
+
             this._dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text + atachments, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
         }
     }
