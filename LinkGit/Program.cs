@@ -32,7 +32,7 @@ namespace LinkGit
     /// </summary>
     public class Program
     {
-        private DiscordClient _client;
+        private DiscordControler _dcControler;
 
         /// <summary>
         /// Calls the Start function when running the program
@@ -45,66 +45,8 @@ namespace LinkGit
         /// </summary>
         public void Start()
         {
-            var dbcontroler = new SQLiteController();
-            dbcontroler.OpenDB(@"./Chatlog");
+            this._dcControler = new DiscordControler();
 
-            this._client = new DiscordClient();
-
-            // Checks for event MessageReceived
-            this._client.MessageReceived += async (s, e) =>
-            {
-                // Checks that the bot is not the author (prevents echo loop)
-                if (!e.Message.IsAuthor)
-                {
-                    // Checks the message to see if there is a #[number] in the message
-                    Match m = Regex.Match(e.Message.Text, "#(\\d+)");
-                    if (m.Success)
-                    {
-                        // create a url for the issue page (removes the '#')
-                        string page = "https://github.com/TeamPorcupine/ProjectPorcupine/issues/" + m.ToString().Substring(1);
-
-                        // Checks if the page exists
-                        using (HttpClient pageChecker = new HttpClient())
-                        {
-                            var response = await pageChecker.GetAsync(page);
-
-                            if (response.IsSuccessStatusCode)
-                            {
-                                await e.Channel.SendMessage(page);
-                            }
-                        }
-                    }
-                }
-
-                dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
-            };
-
-            dbcontroler.PrintMessages(221343758124449802, 221344145011113984, 216284510692704276);
-
-            this._client.MessageDeleted += (s, e) =>
-            {
-                dbcontroler.RemoveMessage(e.Message.Id);
-            };
-
-            this._client.MessageUpdated += (s, e) =>
-            {
-                dbcontroler.EditMessage(e.Before.Id, e.After.Text);
-            };
-             string token = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
-            if (token != null)
-            {
-                this._client.ExecuteAndWait(async () => 
-                {
-                    await _client.Connect(token);
-                });
-            }
-            else
-            {
-                this._client.ExecuteAndWait(async () => 
-                {
-                    await _client.Connect(System.IO.File.ReadAllText(@"./token"));
-                });
-            }
         }
     }
 }
