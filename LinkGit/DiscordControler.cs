@@ -94,9 +94,13 @@ namespace LinkGit
                         await e.Channel.SendMessage(page);
                     }
                 }
-               
             }
-            this._dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
+            string atachments = "";
+            foreach (Discord.Message.Attachment a in e.Message.Attachments)
+            {
+                atachments += " |attachment: " + a.Url;
+            }
+            this._dbcontroler.AddMessage(e.Message.Id, e.Message.User.ToString(), e.Message.Text + atachments, e.Message.Timestamp, e.Channel.Id, e.Channel.Name);
         }
     }
 }
