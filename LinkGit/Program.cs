@@ -54,26 +54,25 @@ namespace LinkGit
 
             OptionSet options = new OptionSet
             {
-                {"b|bot", "starts running the bot", b => {
+                { "b|bot", "starts running the bot", b =>
+                { 
                     this._discordControler = new DiscordController();
-                } },
-
-                {"s|startid=", "sets the startID for getting a list of messages", s => startID = ulong.Parse(s) },
-                {"e|endid=", "sets the endID for getting a list of messages", s => endID = ulong.Parse(s) },
-                {"c|channelid=", "sets the channelID for getting a list of messages", s => channelID = ulong.Parse(s) },
-
-                {"m|messages", "gets the messages for the specified channel between two MessageIDs", m =>
+                }
+                },
+                { "s|startid=", "sets the startID for getting a list of messages", s => startID = ulong.Parse(s) },
+                { "e|endid=", "sets the endID for getting a list of messages", s => endID = ulong.Parse(s) },
+                { "c|channelid=", "sets the channelID for getting a list of messages", s => channelID = ulong.Parse(s) },
+                { "m|messages", "gets the messages for the specified channel between two MessageIDs", m =>
                 {
                     _sqliteControler = new SQLiteController();
                     _sqliteControler.OpenDB(@"./Chatlog");
                     _sqliteControler.PrintMessages(startID, endID, channelID);
-                } },
-
+                }
+                },
             };
             options.Parse(args);
 
             Console.ReadLine();
-
         }
     }
 }
